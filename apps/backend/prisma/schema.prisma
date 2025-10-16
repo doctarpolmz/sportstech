@@ -1,0 +1,134 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  email         String   @unique
+  passwordHash  String
+  firstName     String
+  lastName      String
+  role          Role     @default(ATHLETE)
+  avatarUrl     String?
+  emailVerified Boolean  @default(false)
+  verificationToken String?
+  resetToken    String?
+  resetTokenExpiry DateTime?
+  // Google integrations
+  googleRefreshToken String?
+  googleAccessToken  String?
+  googleTokenExpiry  DateTime?
+  googleCalendarEnabled Boolean @default(false)
+  athletes      TeamMember[]
+  coaches       TeamMember[]
+  messages      Message[]
+  videos        Video[]
+  schedules     Schedule[]
+}
+
+enum Role {
+  ATHLETE
+  COACH
+  ADMIN
+}
+
+model Team {
+  id        String       @id @default(cuid())
+  name      String
+  ownerId   String
+  owner     User         @relation(fields: [ownerId], references: [id])
+  members   TeamMember[]
+  createdAt DateTime     @default(now())
+}
+
+model TeamMember {
+  id        String   @id @default(cuid())
+  teamId    String
+  userId    String
+  role      TeamRole @default(PLAYER)
+  team      Team     @relation(fields: [teamId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+enum TeamRole {
+  PLAYER
+  COACH
+  MANAGER
+}
+
+model Video {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  title       String
+  filename    String
+  mimeType    String
+  sizeBytes   Int
+  processed   Boolean  @default(false)
+  analysis    Analysis?
+  createdAt   DateTime @default(now())
+}
+
+model Analysis {
+  id            String   @id @default(cuid())
+  videoId       String   @unique
+  video         Video    @relation(fields: [videoId], references: [id])
+  score         Int
+  missing       String[]
+  improvements  String[]
+  recommendations Json
+  rawLabels     Json
+  createdAt     DateTime @default(now())
+}
+
+model MessageThread {
+  id        String    @id @default(cuid())
+  athleteId String
+  coachId   String
+  athlete   User      @relation("AthleteThreads", fields: [athleteId], references: [id])
+  coach     User      @relation("CoachThreads", fields: [coachId], references: [id])
+  messages  Message[]
+  createdAt DateTime  @default(now())
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  threadId  String
+  senderId  String
+  content   String
+  attachments Json?
+  sentAt    DateTime @default(now())
+  thread    MessageThread @relation(fields: [threadId], references: [id])
+  sender    User     @relation(fields: [senderId], references: [id])
+}
+
+model Schedule {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  title       String
+  description String?
+  startTime   DateTime
+  endTime     DateTime
+  location    String?
+  googleEventId String?
+  createdAt   DateTime @default(now())
+}
+
+model Lineup {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  sport     String
+  name      String
+  formation String?
+  players   Json
+  createdAt DateTime @default(now())
+}
