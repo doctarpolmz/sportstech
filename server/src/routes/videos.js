@@ -4,6 +4,7 @@ import { requireAuth } from '../middleware/auth.js';
 import { upload } from '../middleware/upload.js';
 import { analyzeVideoWithGoogle, getYoutubeRecommendations } from '../utils/google.js';
 import path from 'path';
+import { getUploadDir } from '../utils/paths.js';
 
 const prisma = new PrismaClient();
 const router = express.Router();
@@ -21,7 +22,7 @@ router.post('/upload', requireAuth, upload.single('video'), async (req, res) => 
     });
 
     // Kick off analysis (simple inline for now)
-    const localPath = path.join(process.env.UPLOAD_DIR || 'server/uploads', req.file.filename);
+    const localPath = path.join(getUploadDir(), req.file.filename);
     const analysis = await analyzeVideoWithGoogle({ localPath, sportHint: req.body.sport });
     const recommendations = await getYoutubeRecommendations(`${req.body.sport || 'sports'} technique drills`);
 

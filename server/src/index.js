@@ -8,6 +8,7 @@ import dotenv from 'dotenv';
 import rateLimit from 'express-rate-limit';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { getUploadDir } from './utils/paths.js';
 
 import authRoutes from './routes/auth.js';
 import userRoutes from './routes/users.js';
@@ -44,8 +45,8 @@ app.use(cookieParser());
 const limiter = rateLimit({ windowMs: 60 * 1000, max: 120 });
 app.use(limiter);
 
-// Static uploads
-const uploadDir = process.env.UPLOAD_DIR || path.join(__dirname, '../uploads');
+// Static uploads (consistent resolution)
+const uploadDir = getUploadDir();
 app.use('/uploads', express.static(uploadDir));
 
 app.get('/api/health', (req, res) => {
