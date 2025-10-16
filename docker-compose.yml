@@ -1,0 +1,54 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: sportstechai-db
+    environment:
+      POSTGRES_DB: sportstechai
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./apps/backend
+    container_name: sportstechai-backend
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - ./.env
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+    ports:
+      - '8080:8080'
+    volumes:
+      - ./apps/backend:/app
+      - ./secrets:/secrets:ro
+      - ./apps/backend/uploads:${UPLOAD_DIR:-/workspace/apps/backend/uploads}
+    command: sh -c "npm install && npm run prisma:generate && npm run dev"
+
+  frontend:
+    build: ./apps/frontend
+    container_name: sportstechai-frontend
+    depends_on:
+      - backend
+    env_file:
+      - ./.env
+    environment:
+      VITE_API_URL: ${API_URL}
+    ports:
+      - '5173:5173'
+    volumes:
+      - ./apps/frontend:/app
+    command: sh -c "npm install && npm run dev -- --host"
+
+volumes:
+  db_data:
