@@ -1,0 +1,27 @@
+# Node
+node_modules/
+**/node_modules/
+.env
+.env.*
+dist/
+build/
+.tmp/
+.cache/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor
+.vscode/
+.idea/
+.DS_Store
+
+# Uploads
+server/uploads/
+
+# Prisma
+server/prisma/dev.db*
+server/prisma/*.db-journal
