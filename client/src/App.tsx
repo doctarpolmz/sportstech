@@ -8,6 +8,7 @@ import VideosPage from './pages/VideosPage'
 import ChatPage from './pages/ChatPage'
 import SchedulePage from './pages/SchedulePage'
 import LineupPage from './pages/LineupPage'
+import Live from './pages/Live'
 
 function PrivateRoute({ children }: { children: JSX.Element }) {
   const token = useAuthStore((s) => s.token)
@@ -31,6 +32,7 @@ export default function App() {
                 <Link to="/videos">Videos</Link>
                 <Link to="/chat">Chat</Link>
                 <Link to="/schedule">Schedule</Link>
+                <Link to="/live">Live</Link>
                 {user.role !== 'athlete' && <Link to="/lineup">Lineup</Link>}
               </>
             )}
@@ -62,6 +64,7 @@ export default function App() {
           <Route path="/chat" element={<PrivateRoute><ChatPage /></PrivateRoute>} />
           <Route path="/schedule" element={<PrivateRoute><SchedulePage /></PrivateRoute>} />
           <Route path="/lineup" element={<PrivateRoute><LineupPage /></PrivateRoute>} />
+          <Route path="/live" element={<PrivateRoute><Live /></PrivateRoute>} />
         </Routes>
       </main>
     </div>

@@ -1,6 +1,11 @@
 import { create } from 'zustand';
 import axios from 'axios';
 
+const initialToken = (typeof window !== 'undefined' ? localStorage.getItem('token') : undefined) || undefined;
+if (initialToken) {
+  axios.defaults.headers.common['Authorization'] = `Bearer ${initialToken}`;
+}
+
 interface User { id: string; email: string; role: 'athlete'|'coach'|'admin'; name: string }
 interface AuthState {
   user?: User;
