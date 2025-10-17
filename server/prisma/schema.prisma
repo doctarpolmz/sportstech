@@ -1,0 +1,134 @@
+// Prisma schema for SportsTech AI
+// Using SQLite for local development; switch to PostgreSQL in production
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                 String   @id @default(cuid())
+  email              String   @unique
+  passwordHash       String
+  name               String
+  role               String   // 'athlete' | 'coach' | 'admin'
+  verified           Boolean  @default(false)
+  verificationToken  String?  @unique
+  resetToken         String?  @unique
+  profilePhotoUrl    String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  // Relations
+  videos             Video[]
+  coachThreads       Thread[] @relation("CoachThreads")
+  athleteThreads     Thread[] @relation("AthleteThreads")
+  sentMessages       Message[] @relation("SentMessages")
+  receivedMessages   Message[] @relation("ReceivedMessages")
+  schedulesAsCoach   Schedule[] @relation("CoachSchedules")
+  schedulesAsAthlete Schedule[] @relation("AthleteSchedules")
+  lineups            Lineup[]
+  coachVideos        Video[]  @relation("CoachVideos")
+
+  coachAthletes      CoachAthlete[] @relation("CoachAthletesCoach")
+  athleteCoaches     CoachAthlete[] @relation("CoachAthletesAthlete")
+  drillsAssigned     Drill[] @relation("AssignedDrills")
+  drillsCreated      Drill[] @relation("CreatedDrills")
+}
+
+// Enums replaced by strings for SQLite compatibility
+
+model Video {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  coachId         String?
+  coach           User?    @relation("CoachVideos", fields: [coachId], references: [id])
+  originalName    String
+  path            String
+  status          String   @default("pending") // 'pending' | 'analyzing' | 'complete' | 'failed'
+  analysisJson    String?
+  score           Int?
+  labelsJson      String?
+  createdAt       DateTime @default(now())
+}
+
+// VideoStatus enum replaced by string
+
+model Thread {
+  id         String @id @default(cuid())
+  coachId    String
+  athleteId  String
+  coach      User   @relation("CoachThreads", fields: [coachId], references: [id])
+  athlete    User   @relation("AthleteThreads", fields: [athleteId], references: [id])
+  createdAt  DateTime @default(now())
+  messages   Message[]
+
+  @@unique([coachId, athleteId])
+}
+
+model Message {
+  id           String   @id @default(cuid())
+  threadId     String
+  thread       Thread   @relation(fields: [threadId], references: [id])
+  senderId     String
+  recipientId  String
+  sender       User     @relation("SentMessages", fields: [senderId], references: [id])
+  recipient    User     @relation("ReceivedMessages", fields: [recipientId], references: [id])
+  content      String
+  attachmentUrl String?
+  createdAt    DateTime @default(now())
+}
+
+model Schedule {
+  id           String   @id @default(cuid())
+  coachId      String
+  athleteId    String
+  coach        User     @relation("CoachSchedules", fields: [coachId], references: [id])
+  athlete      User     @relation("AthleteSchedules", fields: [athleteId], references: [id])
+  title        String
+  description  String?
+  location     String?
+  startTime    DateTime
+  endTime      DateTime
+  googleEventId String?
+  createdAt    DateTime @default(now())
+}
+
+model Lineup {
+  id           String   @id @default(cuid())
+  coachId      String
+  coach        User     @relation(fields: [coachId], references: [id])
+  teamName     String
+  formation    String
+  playersJson  String
+  exportedUrl  String?
+  createdAt    DateTime @default(now())
+}
+
+model CoachAthlete {
+  id         String @id @default(cuid())
+  coachId    String
+  athleteId  String
+  coach      User   @relation("CoachAthletesCoach", fields: [coachId], references: [id])
+  athlete    User   @relation("CoachAthletesAthlete", fields: [athleteId], references: [id])
+
+  @@unique([coachId, athleteId])
+}
+
+model Drill {
+  id           String @id @default(cuid())
+  title        String
+  description  String
+  createdById  String
+  assignedToId String
+  createdBy    User   @relation("CreatedDrills", fields: [createdById], references: [id])
+  assignedTo   User   @relation("AssignedDrills", fields: [assignedToId], references: [id])
+  dueDate      DateTime?
+  completed    Boolean @default(false)
+  createdAt    DateTime @default(now())
+}
