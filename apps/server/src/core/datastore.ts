@@ -17,9 +17,7 @@ const mem = {
 
 async function readJson<T>(file: string, fallback: T): Promise<T> {
   if (isVercel) {
-    // @ts-expect-error dynamic mem key
     const key = file.replace(/\.json$/, "");
-    // @ts-expect-error index
     return (mem as any)[key] ?? fallback;
   } else {
     await ensureDir();
@@ -36,9 +34,7 @@ async function readJson<T>(file: string, fallback: T): Promise<T> {
 
 async function writeJson<T>(file: string, data: T): Promise<void> {
   if (isVercel) {
-    // @ts-expect-error dynamic mem key
     const key = file.replace(/\.json$/, "");
-    // @ts-expect-error index
     (mem as any)[key] = data;
   } else {
     await ensureDir();
