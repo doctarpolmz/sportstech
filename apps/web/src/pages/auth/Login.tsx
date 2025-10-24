@@ -3,7 +3,7 @@ import { useAuth } from '../../auth/AuthContext'
 import { useNavigate } from 'react-router-dom'
 
 export function Login(){
-  const { login, role } = useAuth()
+  const { login } = useAuth()
   const [email, setEmail] = useState('farmer@arip.local')
   const [password, setPassword] = useState('password123')
   const [error, setError] = useState<string | null>(null)
@@ -12,8 +12,8 @@ export function Login(){
   async function submit(e: React.FormEvent){
     e.preventDefault()
     try {
-      await login(email, password)
-      navigate(role === 'FSP_STAFF' ? '/fsp' : '/farmer')
+      const next = await login(email, password)
+      navigate(next.role === 'FSP_STAFF' ? '/fsp' : '/farmer')
     } catch (err: any) {
       setError(err.message || 'Login failed')
     }

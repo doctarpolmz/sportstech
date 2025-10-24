@@ -4,7 +4,7 @@ import { apiFetch } from '../lib/api'
 type AuthState = { token: string | null, role?: string, userId?: string, farmerId?: string }
 
 type AuthContextType = AuthState & {
-  login: (email: string, password: string) => Promise<void>
+  login: (email: string, password: string) => Promise<{ role?: string; farmerId?: string }>
   register: (payload: { email: string, password: string, role?: string, name?: string }) => Promise<void>
   logout: () => void
 }
@@ -28,6 +28,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!res.ok) throw new Error('Login failed')
     const data = await res.json()
     setState({ token: data.token, role: data.role, userId: data.userId, farmerId: data.farmerId })
+    return { role: data.role as string | undefined, farmerId: data.farmerId as string | undefined }
   }
 
   async function register(payload: { email: string, password: string, role?: string, name?: string }) {
