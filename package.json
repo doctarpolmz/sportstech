@@ -1,0 +1,13 @@
+{
+  "name": "arip",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run -w apps/server dev & npm run -w apps/web dev",
+    "build": "npm -w apps/server run build && npm -w apps/web run build",
+    "start": "npm -w apps/server start"
+  }
+}
