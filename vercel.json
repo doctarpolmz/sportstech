@@ -1,11 +1,12 @@
 {
   "version": 2,
   "builds": [
-    { "src": "apps/web/index.html", "use": "@vercel/static-build", "config": { "distDir": "apps/web/dist" } },
+    { "src": "apps/web/package.json", "use": "@vercel/static-build", "config": { "distDir": "dist" } },
     { "src": "api/serverless.ts", "use": "@vercel/node" }
   ],
   "routes": [
     { "src": "/api/(.*)", "dest": "/api/serverless.ts" },
-    { "src": "/(.*)", "dest": "apps/web/dist/$1" }
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
