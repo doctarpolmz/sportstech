@@ -3,6 +3,7 @@ import { z } from 'zod'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { PrismaClient, Role } from '@prisma/client'
+import { requireAuth } from '../security/auth.js'
 
 const prisma = new PrismaClient()
 const router = Router()
@@ -37,8 +38,17 @@ router.post('/login', async (req, res) => {
   if (!user) return res.status(401).json({ error: 'Invalid credentials' })
   const ok = await bcrypt.compare(password, user.password)
   if (!ok) return res.status(401).json({ error: 'Invalid credentials' })
+  const farmer = await prisma.farmer.findUnique({ where: { userId: user.id }, select: { id: true } })
   const token = jwt.sign({ sub: user.id, role: user.role }, process.env.JWT_SECRET || 'dev', { expiresIn: '7d' })
-  res.json({ token })
+  res.json({ token, role: user.role, userId: user.id, farmerId: farmer?.id })
+})
+
+router.get('/me', requireAuth(), async (req, res) => {
+  const userId = (req as any).userId as string
+  const user = await prisma.user.findUnique({ where: { id: userId } })
+  if (!user) return res.status(404).json({ error: 'User not found' })
+  const farmer = await prisma.farmer.findUnique({ where: { userId: user.id }, select: { id: true } })
+  res.json({ id: user.id, role: user.role, farmerId: farmer?.id })
 })
 
 export default router
