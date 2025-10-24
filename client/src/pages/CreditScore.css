@@ -1,0 +1,266 @@
+.credit-score-page {
+  padding: 2rem 0;
+}
+
+.page-header {
+  margin-bottom: 2rem;
+}
+
+.page-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+.page-header p {
+  color: #6b7280;
+}
+
+.score-hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.score-display {
+  background: linear-gradient(135deg, #10b981, #059669);
+  padding: 3rem;
+  border-radius: 1rem;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.score-circle {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.score-value {
+  font-size: 5rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.score-max {
+  font-size: 1.5rem;
+  opacity: 0.9;
+}
+
+.score-rating {
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.score-breakdown-chart {
+  background: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.score-breakdown-chart h3 {
+  color: #111827;
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.score-details {
+  margin-bottom: 3rem;
+}
+
+.score-details h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 1.5rem;
+}
+
+.components-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.component-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.component-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.component-icon.green {
+  background: #d1fae5;
+}
+
+.component-icon.blue {
+  background: #dbeafe;
+}
+
+.component-icon.yellow {
+  background: #fef3c7;
+}
+
+.component-card h3 {
+  color: #111827;
+  font-size: 1.125rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.component-score {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+.component-score span {
+  font-size: 1.5rem;
+  color: #9ca3af;
+  font-weight: 400;
+}
+
+.component-card p {
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.recommendations {
+  background: white;
+  padding: 2rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  margin-bottom: 3rem;
+}
+
+.recommendations h2 {
+  color: #111827;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.recommendations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.recommendation-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f0fdf4;
+  border-radius: 0.5rem;
+  border-left: 4px solid #10b981;
+}
+
+.recommendation-icon {
+  color: #10b981;
+  font-weight: bold;
+  font-size: 1.25rem;
+}
+
+.recommendation-item p {
+  color: #374151;
+  flex: 1;
+}
+
+.score-benefits {
+  background: white;
+  padding: 2rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.score-benefits h2 {
+  color: #111827;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.benefit-card {
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  border: 2px solid #e5e7eb;
+  transition: all 0.2s;
+}
+
+.benefit-card:hover {
+  border-color: #10b981;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.benefit-card h4 {
+  color: #111827;
+  font-size: 1.125rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.benefit-card ul {
+  list-style: none;
+  padding: 0;
+}
+
+.benefit-card ul li {
+  color: #6b7280;
+  font-size: 0.875rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.benefit-card ul li:last-child {
+  border-bottom: none;
+}
+
+@media (max-width: 768px) {
+  .score-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .score-display {
+    padding: 2rem;
+  }
+
+  .score-value {
+    font-size: 4rem;
+  }
+
+  .score-rating {
+    font-size: 1.5rem;
+  }
+
+  .components-grid,
+  .benefits-grid {
+    grid-template-columns: 1fr;
+  }
+}
