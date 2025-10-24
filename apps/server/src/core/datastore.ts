@@ -2,25 +2,49 @@ import { promises as fs } from "fs";
 import path from "path";
 import { FarmerProfile, SessionState, ClimateDatum, MobileMoneyFeature, VslaRecord } from "../types.js";
 
+const isVercel = !!process.env.VERCEL;
 const dataRoot = path.join(process.cwd(), "data");
 const ensureDir = async () => fs.mkdir(dataRoot, { recursive: true });
 
+// In-memory fallbacks for serverless (ephemeral FS)
+const mem = {
+  farmers: [] as FarmerProfile[],
+  sessions: [] as SessionState[],
+  climate: [] as ClimateDatum[],
+  mobile: [] as MobileMoneyFeature[],
+  vsla: [] as VslaRecord[],
+};
+
 async function readJson<T>(file: string, fallback: T): Promise<T> {
-  await ensureDir();
-  const p = path.join(dataRoot, file);
-  try {
-    const raw = await fs.readFile(p, "utf8");
-    return JSON.parse(raw) as T;
-  } catch (e) {
-    await fs.writeFile(p, JSON.stringify(fallback, null, 2));
-    return fallback;
+  if (isVercel) {
+    // @ts-expect-error dynamic mem key
+    const key = file.replace(/\.json$/, "");
+    // @ts-expect-error index
+    return (mem as any)[key] ?? fallback;
+  } else {
+    await ensureDir();
+    const p = path.join(dataRoot, file);
+    try {
+      const raw = await fs.readFile(p, "utf8");
+      return JSON.parse(raw) as T;
+    } catch (e) {
+      await fs.writeFile(p, JSON.stringify(fallback, null, 2));
+      return fallback;
+    }
   }
 }
 
 async function writeJson<T>(file: string, data: T): Promise<void> {
-  await ensureDir();
-  const p = path.join(dataRoot, file);
-  await fs.writeFile(p, JSON.stringify(data, null, 2));
+  if (isVercel) {
+    // @ts-expect-error dynamic mem key
+    const key = file.replace(/\.json$/, "");
+    // @ts-expect-error index
+    (mem as any)[key] = data;
+  } else {
+    await ensureDir();
+    const p = path.join(dataRoot, file);
+    await fs.writeFile(p, JSON.stringify(data, null, 2));
+  }
 }
 
 export const datastore = {

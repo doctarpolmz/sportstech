@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "npm run -w apps/server dev & npm run -w apps/web dev",
     "build": "npm -w apps/server run build && npm -w apps/web run build",
-    "start": "npm -w apps/server start"
+    "start": "npm -w apps/server start",
+    "vercel-build": "npm ci && npm -w apps/web run build && mkdir -p api && cp -r apps/server/dist api && echo done"
   }
 }
