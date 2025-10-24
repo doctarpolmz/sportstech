@@ -2,20 +2,12 @@
   "name": "arip",
   "private": true,
   "version": "0.1.0",
-  "workspaces": [
-    "apps/*"
-  ],
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "serverless-http": "^3.2.0",
-    "zod": "^3.23.8"
-  },
+  "workspaces": ["apps/*", "services/*"],
   "scripts": {
-    "dev": "npm run -w apps/server dev & npm run -w apps/web dev",
-    "build": "npm -w apps/server run build && npm -w apps/web run build",
-    "start": "npm -w apps/server start",
-    "vercel-build": "npm -w apps/web run build"
+    "dev:api": "npm -w services/api run dev",
+    "dev:web": "npm -w apps/web run dev",
+    "dev": "npm run dev:api & npm run dev:web",
+    "db:up": "docker compose -f infra/db/docker-compose.yml up -d",
+    "db:down": "docker compose -f infra/db/docker-compose.yml down"
   }
 }

@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  role      Role
+  farmer    Farmer?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  FARMER
+  FSP_STAFF
+  ADMIN
+  AGENT
+}
+
+model Farmer {
+  id          String   @id @default(cuid())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String   @unique
+  name        String
+  language    String   @default("en")
+  farms       Farm[]
+  scores      CreditScore[]
+  applications LoanApplication[]
+}
+
+model Farm {
+  id        String   @id @default(cuid())
+  farmer    Farmer   @relation(fields: [farmerId], references: [id])
+  farmerId  String
+  name      String
+  // WGS84 Point as GeoJSON string (simplified to avoid native extension here)
+  location  String
+}
+
+model CreditScore {
+  id        String   @id @default(cuid())
+  farmer    Farmer   @relation(fields: [farmerId], references: [id])
+  farmerId  String
+  ari       Int
+  frl       Int
+  bonus     Int
+  total     Int
+  createdAt DateTime @default(now())
+}
+
+model LoanApplication {
+  id         String   @id @default(cuid())
+  farmer     Farmer   @relation(fields: [farmerId], references: [id])
+  farmerId   String
+  amountUGX  Int
+  status     LoanStatus @default(PENDING)
+  createdAt  DateTime @default(now())
+}
+
+enum LoanStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}

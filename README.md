@@ -1,34 +1,63 @@
 # AgriRisk Intelligence Platform (ARIP)
 
-AI-Driven Climate Resilience and Financial Inclusion for Uganda's Smallholder Farmers
+AI-driven climate resilience and financial inclusion for Uganda's smallholder farmers.
 
-This repository contains a full-stack, mobile-first web platform with USSD integration to deliver ARIP services.
+## Monorepo Structure
 
-## Apps
-- `apps/server`: TypeScript Express backend with USSD endpoint and ARIP score engine
-- `apps/web`: Vite + React + TypeScript frontend (mobile-first)
+```
+services/
+  api/           # Node.js + Express + TypeScript + Prisma + Socket.io
+  ml/            # Python Flask microservice (ML scoring placeholder)
+infra/
+  db/            # Docker Compose for Postgres + PostGIS
+apps/
+  web/           # React + TypeScript (mobile-first)
+```
 
-## Quick Start
+## Prerequisites
+- Node.js 18+
+- Docker + Docker Compose
 
+## Setup
+
+1) Start Postgres + PostGIS
 ```bash
-# install deps at root workspaces
+docker compose -f infra/db/docker-compose.yml up -d
+```
+
+2) API env and Prisma
+```bash
+cd services/api
+cp .env.example .env
+echo "DATABASE_URL=postgresql://arip:arip@localhost:5432/arip" >> .env
+echo "JWT_SECRET=devsecret" >> .env
 npm install
-
-# start backend
-npm run -w apps/server dev
-
-# start frontend
-npm run -w apps/web dev
+npm run prisma:generate
+npm run prisma:migrate -- --name init
+npm run dev
 ```
 
-## Environment
-Create `apps/server/.env` with:
-
-```
-PORT=4000
-AT_USERNAME=your_at_username
-AT_API_KEY=your_at_api_key
-AT_SHORTCODE=*123#
+3) ML service
+```bash
+cd services/ml
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+python app.py
 ```
 
-USSD endpoint (Africa's Talking-style): `POST /api/ussd` with form data `sessionId, serviceCode, phoneNumber, text`.
+4) Web
+```bash
+cd apps/web
+npm install
+npm run dev
+```
+
+## Key Endpoints
+- POST `/api/auth/register`, `/api/auth/login`
+- GET `/api/farmers/:id/arip-score`
+- POST `/api/loans/apply`
+- GET `/api/dashboard/fsp-overview`
+
+## Notes
+- Prisma schema includes core tables. Extend with satellite, weather, mobile money, VSLA.
+- Flask `/score` implements a placeholder scoring logic for iteration.
