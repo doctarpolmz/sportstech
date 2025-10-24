@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react'
+import { apiFetch } from '../lib/api'
 
 type AuthState = { token: string | null, role?: string, userId?: string, farmerId?: string }
 
@@ -23,14 +24,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [state])
 
   async function login(email: string, password: string) {
-    const res = await fetch('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) })
+    const res = await apiFetch('/api/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) })
     if (!res.ok) throw new Error('Login failed')
     const data = await res.json()
     setState({ token: data.token, role: data.role, userId: data.userId, farmerId: data.farmerId })
   }
 
   async function register(payload: { email: string, password: string, role?: string, name?: string }) {
-    const res = await fetch('/api/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+    const res = await apiFetch('/api/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
     if (!res.ok) throw new Error('Register failed')
   }
 
