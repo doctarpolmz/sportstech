@@ -25,7 +25,7 @@ apps/
 docker compose -f infra/db/docker-compose.yml up -d
 ```
 
-2) API env and Prisma
+2A) API env and Prisma (local Express server)
 ```bash
 cd services/api
 cp .env.example .env
@@ -36,6 +36,9 @@ npm run prisma:generate
 npm run prisma:migrate -- --name init
 npm run dev
 ```
+
+2B) Vercel serverless API alternative
+Place serverless API functions under `api/` as committed (auth, dashboard, farmers). Configure `DATABASE_URL` and `JWT_SECRET` in Vercel Project → Settings → Environment Variables. Deploy web from `apps/web` or monorepo root and point the frontend to your API via `window.__ARIP_API__` in `apps/web/index.html`.
 
 3) ML service
 ```bash
