@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root{--bg:#0b1b13;--fg:#f5f9f7;--muted:#c6d5ce;--accent:#2ecc71;--card:#12261b}
 *{box-sizing:border-box}
 html,body,#root{height:100%}

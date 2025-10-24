@@ -1,9 +1,16 @@
 import { useEffect, useState } from 'react'
+import { io } from 'socket.io-client'
 
 export function Home() {
   const [health, setHealth] = useState<string>("…")
   useEffect(() => {
     fetch('/api/health').then(r=>r.json()).then(j=>setHealth(j.status)).catch(()=>setHealth('offline'))
+    const socket = io('/', { path: '/socket.io' })
+    socket.on('welcome', (msg) => {
+      // eslint-disable-next-line no-console
+      console.log(msg)
+    })
+    return () => { socket.close() }
   },[])
   return (
     <div className="hero">
