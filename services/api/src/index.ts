@@ -6,6 +6,7 @@ import dotenv from 'dotenv'
 import { Server } from 'socket.io'
 import authRouter from './routes/auth.js'
 import farmerRouter from './routes/farmers.js'
+import fspRouter from './routes/fsp.js'
 import loanRouter from './routes/loans.js'
 import dashboardRouter from './routes/dashboard.js'
 
@@ -24,6 +25,7 @@ app.use('/api/auth', authRouter)
 app.use('/api/farmers', farmerRouter)
 app.use('/api/loans', loanRouter)
 app.use('/api/dashboard', dashboardRouter)
+app.use('/api/fsp', fspRouter)
 
 io.on('connection', (socket) => {
   socket.emit('welcome', { message: 'Connected to ARIP realtime' })

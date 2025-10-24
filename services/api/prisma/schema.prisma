@@ -33,6 +33,9 @@ model Farmer {
   farms       Farm[]
   scores      CreditScore[]
   applications LoanApplication[]
+  transactions MobileTransaction[]
+  vsla         VslaRecord?
+  practices    Json?
 }
 
 model Farm {
@@ -42,6 +45,8 @@ model Farm {
   name      String
   // GeoJSON Point stored as JSON string; for PostGIS, consider using native extension in a later milestone
   location  String
+  satellite SatelliteData[]
+  weather   WeatherData[]
 }
 
 model CreditScore {
@@ -68,4 +73,47 @@ enum LoanStatus {
   PENDING
   APPROVED
   REJECTED
+}
+
+model SatelliteData {
+  id        String   @id @default(cuid())
+  farm      Farm     @relation(fields: [farmId], references: [id])
+  farmId    String
+  timestamp DateTime
+  ndvi      Float?
+  evi       Float?
+  provider  String?
+}
+
+model WeatherData {
+  id          String   @id @default(cuid())
+  farm        Farm     @relation(fields: [farmId], references: [id])
+  farmId      String
+  date        DateTime
+  rainfallMm  Float?
+  tempC       Float?
+  droughtRisk Float?
+}
+
+model MobileTransaction {
+  id        String   @id @default(cuid())
+  farmer    Farmer   @relation(fields: [farmerId], references: [id])
+  farmerId  String
+  amountUGX Int
+  type      TxnType
+  at        DateTime @default(now())
+}
+
+enum TxnType {
+  IN
+  OUT
+}
+
+model VslaRecord {
+  id                     String   @id @default(cuid())
+  farmer                 Farmer   @relation(fields: [farmerId], references: [id])
+  farmerId               String   @unique
+  onTimeRepaymentRate    Float    // 0..1
+  delinquencyDaysAvg     Int      // avg days late
+  updatedAt              DateTime @updatedAt
 }
