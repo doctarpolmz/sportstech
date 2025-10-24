@@ -5,10 +5,17 @@
   "workspaces": [
     "apps/*"
   ],
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "serverless-http": "^3.2.0",
+    "zod": "^3.23.8"
+  },
   "scripts": {
     "dev": "npm run -w apps/server dev & npm run -w apps/web dev",
     "build": "npm -w apps/server run build && npm -w apps/web run build",
     "start": "npm -w apps/server start",
-    "vercel-build": "npm ci && npm -w apps/web run build && mkdir -p api && cp -r apps/server/dist api && echo done"
+    "vercel-build": "npm -w apps/web run build"
   }
 }
